@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
   appState$: Observable<AppState<CustomResponse>>;
   constructor(private serverService: ServerService) { }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.appState$ = this.serverService.servers$
       .pipe(
         map(response => {

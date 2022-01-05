@@ -24,28 +24,28 @@ export class ServerService {
 
 
   // if you want to define an observable you can put the $ symbol after the variable name.
-  servers$ = <Observable<never>>
+  servers$ = <Observable<CustomResponse>>
     this.http.get<CustomResponse>(`${this.apiUrl}/server/list`)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
       );
 
-  save$ = (server: Server) => <Observable<never>>
-    this.http.post<CustomResponse>(`${this.apiUrl}/server/list`, server)
+  save$ = (server: Server) => <Observable<CustomResponse>>
+    this.http.post<CustomResponse>(`${this.apiUrl}/server/save`, server)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
       );
 
-  ipAddress$ = (ipAddress: string) => <Observable<never>>
+  ping$ = (ipAddress: string) => <Observable<CustomResponse>>
     this.http.get<CustomResponse>(`${this.apiUrl}/server/ping/${ipAddress}`)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
       );
 
-  delete$ = (serverId: number) => <Observable<never>>
+  delete$ = (serverId: number) => <Observable<CustomResponse>>
     this.http.delete<CustomResponse>(`${this.apiUrl}/server/delete/${serverId}`)
       .pipe(
         tap(console.log),
@@ -59,14 +59,13 @@ export class ServerService {
       suscriber => {
         console.log(response);
         suscriber.next(
-          status === Status.ALL ? { ...response, message: `Servers filter with status ${status}` }
-            :
+          status === Status.ALL ? { ...response, message: `Servers filtered by ${status} status` } :
             {
               ...response,
-              message: response.data.servers.filter(server => server.status).length > 0 ?
-                `Servers filtered by ${status === Status.SERVER_UP ?
-                  'SERVER UP' : 'SERVER DOWN'} status` : `No server of ${status} status found`
-              ,
+              message: response.data.servers
+                .filter(server => server.status === status).length > 0 ? `Servers filtered by 
+            ${status === Status.SERVER_UP ? 'SERVER UP'
+                : 'SERVER DOWN'} status` : `No servers of ${status} found`,
               data: {
                 servers: response.data.servers
                   .filter(server => server.status === status)
